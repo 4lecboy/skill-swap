@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SkillSwap
 
-## Getting Started
+A Next.js app (App Router) with Tailwind CSS + shadcn/ui, Supabase SSR helpers, and lean observability.
 
-First, run the development server:
+## Quickstart
 
 ```bash
+# Install dependencies
+npm install
+
+# Copy env and fill values
+cp .env.example .env.local
+# Add:
+# NEXT_PUBLIC_SUPABASE_URL
+# NEXT_PUBLIC_SUPABASE_ANON_KEY
+# Optional:
+# SENTRY_DSN
+# NEXT_PUBLIC_SENTRY_TRACES_SAMPLE_RATE
+
+# Dev
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Verify setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Tailwind/shadcn demo: http://localhost:3000/tw-check
+- Health endpoint (200, plain text): http://localhost:3000/health
+- DB smoke test (if schema seeded): http://localhost:3000/api/db-smoke
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Day 1 notes
 
-## Learn More
+- Tailwind CSS @latest configured with design tokens (CSS variables) and shadcn/ui components (Button, Input, Select, Dialog).
+- App shell with mobile header and AuthGate stub (Sign in / Continue placeholders).
+- Health endpoint at /health for uptime checks (bypasses UI/auth).
+- Supabase SSR + observability (Sentry, Vercel Analytics/Speed Insights) scaffolding available; enable via env vars as needed.
 
-To learn more about Next.js, take a look at the following resources:
+## Next steps (Day 2)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Wire Supabase auth into AuthGate (session detection, sign-in flow).
+- Expand tokens and component library as design solidifies.
+- Add middleware exclusions for health if desired (see Tips).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Tips
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- If you use an uptime checker, prefer GET /health (implemented as a route handler to avoid layout/auth).
+- To avoid any middleware overhead on health checks, add /health to the middleware matcher exclusions.
