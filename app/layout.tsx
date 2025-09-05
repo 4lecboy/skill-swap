@@ -2,7 +2,7 @@ import "@/app/globals.css";
 import type { Metadata } from "next";
 import { ReactNode } from "react";
 import { AppShell } from "@/components/layout/app-shell";
-import { AuthGate } from "@/components/auth/auth-gate";
+import { AuthGate } from "@/components/features/auth/components/auth-gate";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 

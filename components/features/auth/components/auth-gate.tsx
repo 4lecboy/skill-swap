@@ -10,6 +10,8 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
   const [isAuthed, setIsAuthed] = useState(false);
   const pathname = usePathname();
   const isAuthRoute = pathname?.startsWith("/auth");
+  const isPublicProfileRoute = pathname?.startsWith("/u/");
+  const isPublicRoute = isAuthRoute || isPublicProfileRoute;
 
   useEffect(() => {
     const supabase = supabaseBrowser();
@@ -27,8 +29,8 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // Always allow auth routes (sign-in, callback) to render
-  if (isAuthRoute) return <>{children}</>;
+  // Always allow auth routes and public profile routes to render
+  if (isPublicRoute) return <>{children}</>;
 
   if (loading) {
     return <div className="p-6 text-sm text-muted-foreground">Loading…</div>;
