@@ -5,9 +5,18 @@ import { usePathname } from "next/navigation";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 
-export function AuthGate({ children }: { children: React.ReactNode }) {
-  const [loading, setLoading] = useState(true);
-  const [isAuthed, setIsAuthed] = useState(false);
+export function AuthGate({
+  children,
+  defaultAuthed = false,
+}: {
+  children: React.ReactNode;
+  defaultAuthed?: boolean;
+}) {
+  // Assume the provided default initially to control UI flicker.
+  const [isAuthed, setIsAuthed] = useState<boolean>(defaultAuthed);
+  // If we assume authed, don't block render with a loader; otherwise, show loader until we know.
+  const [loading, setLoading] = useState<boolean>(!defaultAuthed);
+
   const pathname = usePathname();
   const isAuthRoute = pathname?.startsWith("/auth");
   const isPublicProfileRoute = pathname?.startsWith("/u/");
@@ -21,15 +30,17 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
       setLoading(false);
     });
 
-    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuthed(!!session);
-    });
+    const { data: subscription } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setIsAuthed(!!session);
+      }
+    );
     return () => {
       subscription.subscription.unsubscribe();
     };
   }, []);
 
-  // Always allow auth routes and public profile routes to render
+  // Always allow public routes to render
   if (isPublicRoute) return <>{children}</>;
 
   if (loading) {
